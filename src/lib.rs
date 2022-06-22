@@ -1,15 +1,36 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::near_bindgen;
+use chrono::{Local, DateTime}
 
 #[near_bindgen]
 #[derive(Default, BorshDeserialize, BorshSerialize)]
-pub struct Contract {
+pub struct Parcel {
     // SETUP CONTRACT STATE
+    parcel_id:u8,
+    sender_name: String,
+    sender_phone_no: u8,
+    receiver_name: String,
+    receiver_phone_no:u8,
+    delivery_charges:u32,
+    destination: String,
+    is_fragile:bool,
+    date_sent:DateTime<Local>,
+    date_received: DateTime<Local>,
+    is_received:bool
+}
+
+pub struct Parcel_tracker{
+    //Set up contract method
+    parcel_id:u8,
+    has_been_dispatched:bool,
+    current_location:String,
+    has_arrived:bool
 }
 
 #[near_bindgen]
 impl Contract {
     // ADD CONTRACT METHODS HERE
+   pub fn new (sender:&str,phone:&u8)
 }
 
 /*
