@@ -1,7 +1,7 @@
 [package]
-name = "rust-template"
+name = "delivery_app"
 version = "0.1.0"
-authors = ["Near Inc <hello@near.org>"]
+authors = ["Carlos <clonjez@gmail.com>"]
 edition = "2018"
 
 [lib]
