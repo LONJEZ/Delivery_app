@@ -90,7 +90,7 @@ impl Contract {
    }
 
    #[private]
-   //impliments method check if the amount paid is equal to  the delivery charges and initiate trackig of the parcel
+   //impliments method check if the amount paid is equal to  the delivery charges and initiate tracking of the parcel
 
    pub fn dispatch(&mut self, id: u16, location: String){
     if self.parcels[&id].delivery_charges > 10 {
