@@ -4,6 +4,7 @@ use std::collections::HashMap;
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize)]
+//creates a super struct to hold parcel and tracker
 pub struct Contract {
     trackers: HashMap<u16, ParcelTracker>,
     parcels: HashMap<u16, Parcel>,
@@ -12,6 +13,7 @@ pub struct Contract {
 
 #[near_bindgen]
 #[derive(Default, BorshDeserialize, BorshSerialize)]
+//creates a struct parcel to define the parcel components.
 pub struct Parcel {
     // SETUP CONTRACT STATE
     sender_name: String,
@@ -28,6 +30,7 @@ pub struct Parcel {
 
 #[near_bindgen]
 #[derive(Default, BorshDeserialize, BorshSerialize)]
+//creates a struct parcelTracker to define the tracker component 
 pub struct ParcelTracker{
     //Set up contract method
     parcel_id:u16,
@@ -35,6 +38,7 @@ pub struct ParcelTracker{
     has_arrived:bool
 }
 
+// creates defaults  contract to store trackers,parcels and ids
 impl Default for Contract {
     fn default() -> Self {
         Contract {
@@ -46,8 +50,9 @@ impl Default for Contract {
 }
 
 #[near_bindgen]
+
 impl Contract {
-    // ADD CONTRACT METHODS HERE
+    // implements contract method to create a new parcel
     #[private]
    pub fn new_parcel(&mut self,sender_name: String, sender_phone: usize, receiver_name: String, receiver_phone:usize, 
     charges:u32, destination: String, is_fragile:bool, date:String,) {
@@ -70,6 +75,7 @@ impl Contract {
    }
 
    #[payable]
+   //implement a contract method  to check payment for delivery charges and generate tracking id
    pub fn pay(&mut self, id: u16){
     let tokens = env::attached_deposit() / 10u128.pow(22);
     if let Some(parcel) = self.parcels.get_mut(&id) {
@@ -84,6 +90,8 @@ impl Contract {
    }
 
    #[private]
+   //impliments method check if the amount paid is equal to  the delivery charges and initiate trackig of the parcel
+
    pub fn dispatch(&mut self, id: u16, location: String){
     if self.parcels[&id].delivery_charges > 10 {
         log!("Client still owes {}", self.parcels[&id].delivery_charges);
@@ -97,6 +105,8 @@ impl Contract {
 
     self.trackers.insert(id, new_tracker);
    }
+
+   // implement method  to query parcel location
 
    pub fn track_package(&self, id: u16, phone: usize) -> String {
     if self.parcels[&id].sender_phone_no != phone {
@@ -146,6 +156,7 @@ mod tests {
     // TESTS HERE
 
     #[test]
+    //test if the new_parcel method is able to create a new parcel
     fn test_new_parcel(){
         // let mut context = get_context(accounts(1));
         let mut contract = Contract::default();
@@ -156,6 +167,7 @@ mod tests {
     }
 
     #[test]
+    //test of the pay function is able to check the amount paid for the new parcel and generate a tracking id
     fn test_pay(){
         let mut context = get_context(vec![], false);
         context.attached_deposit = 100 * 10u128.pow(22);
@@ -171,6 +183,7 @@ mod tests {
     }
 
     #[test]
+    // test if the dispatch method is able to check on the amount paid and see if its matches the delivery charges before initiating the tracking
     fn test_dispatch(){
         let mut context = get_context(vec![], false);
         context.attached_deposit = 100 * 10u128.pow(22);
