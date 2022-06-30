@@ -203,3 +203,11 @@ This test confirm if the dispatch method is able to check on the amount paid and
                 assert_eq!(1, contract.trackers.len())
             }
         }
+
+A [smart contract] written in [Rust] for an app initialized with [create-near-app]
+
+[smart contract]: https://docs.near.org/docs/develop/contracts/overview
+[rust]: https://www.rust-lang.org/
+[create-near-app]: https://github.com/near/create-near-app
+[correct target]: https://github.com/near/near-sdk-rs#pre-requisites
+[cargo]: https://doc.rust-lang.org/book/ch01-03-hello-cargo.html
