@@ -92,14 +92,14 @@ Here I apply the implementation contract methods to create a new parcel
         }
 
  Here I implement the pay method  to check payment for delivery charges and generate tracking id
-  #[payable]
-  
+ 
+ 
+ #[payable]
    pub fn pay(&mut self, id: u16){
     let tokens = env::attached_deposit() / 10u128.pow(22);
     if let Some(parcel) = self.parcels.get_mut(&id) {
         parcel.delivery_charges = parcel.delivery_charges - tokens as u32;
     }
-
     if self.parcels[&id].delivery_charges > 1 {
         log!("You still owe {}", self.parcels[&id].delivery_charges);
     } else {
@@ -107,10 +107,11 @@ Here I apply the implementation contract methods to create a new parcel
     }
    }
 
- Here I impliments  dispatch method to check if the amount paid is equal to  the delivery charges and initiate tracking of the parcel
-        #[private]
 
-        pub fn dispatch(&mut self, id: u16, location: String){
+ Here I impliments  dispatch method to check if the amount paid is equal to  the delivery charges and initiate tracking of the parcel
+       
+       #[private]
+       pub fn dispatch(&mut self, id: u16, location: String){
             if self.parcels[&id].delivery_charges > 10 {
                 log!("Client still owes {}", self.parcels[&id].delivery_charges);
                 return;
@@ -173,7 +174,8 @@ This test cofirms if the new_parcel method is able to create a new parcel
 
 #[test]
 This test confirms if the pay function is able to check the amount paid for the new parcel and generate a tracking id
-            fn test_pay(){
+           
+           fn test_pay(){
                 let mut context = get_context(vec![], false);
                 context.attached_deposit = 100 * 10u128.pow(22);
                 context.is_view = false;
@@ -186,6 +188,7 @@ This test confirms if the pay function is able to check the amount paid for the 
 
                 assert!(contract.parcels[&1].delivery_charges < 1);
             }
+
 #[test]
 This test confirm if the dispatch method is able to check on the amount paid and see if its matches the delivery charges before initiating the tracking
             fn test_dispatch(){
