@@ -57,9 +57,15 @@ Here I create a struct parcel to define the parcel components.
 
 Here I create a struct parcelTracker to define the tracker component.
 
+
         #[near_bindgen]
         #[derive(Default, BorshDeserialize, BorshSerialize)]
         
+=======
+        #[near_bindgen]
+        #[derive(Default, BorshDeserialize, BorshSerialize)]
+ 
+
         pub struct ParcelTracker{
             //Set up contract method
             parcel_id:u16,
@@ -72,7 +78,7 @@ Here I apply the implementation contract methods to create a new parcel.
         #[near_bindgen]
         impl Contract {
             
-            #[private]
+        #[private]
         pub fn new_parcel(&mut self,sender_name: String, sender_phone: usize, receiver_name: String, receiver_phone:usize, 
             charges:u32, destination: String, is_fragile:bool, date:String,) {
             let new_parcel = Parcel {
@@ -93,7 +99,9 @@ Here I apply the implementation contract methods to create a new parcel.
             self.ids += 1;
         }
 
-Here I implement the pay method  to check payment for delivery charges and generate tracking id.
+
+ Here I implement the pay method  to check payment for delivery charges and generate tracking id.
+ 
 
         #[payable]
         pub fn pay(&mut self, id: u16){
@@ -109,9 +117,9 @@ Here I implement the pay method  to check payment for delivery charges and gener
         }
 
  Here I impliments  dispatch method to check if the amount paid is equal to  the delivery charges and initiate tracking of the parcel.
-        
-        #[private]
-        pub fn dispatch(&mut self, id: u16, location: String){
+       
+       #[private]
+       pub fn dispatch(&mut self, id: u16, location: String){
             if self.parcels[&id].delivery_charges > 10 {
                 log!("Client still owes {}", self.parcels[&id].delivery_charges);
                 return;
@@ -125,7 +133,8 @@ Here I implement the pay method  to check payment for delivery charges and gener
             self.trackers.insert(id, new_tracker);
         }
         
- Here I implement track_package method  to query parcel location. This method check if the parcel id and the number are equal if the are not the location cannot be accessed.
+
+Here I implement track_package method  to query parcel location. This method check if the parcel id and the number are equal if the are not the location cannot be accessed.
 
         pub fn track_package(&self, id: u16, phone: usize) -> String {
             if self.parcels[&id].sender_phone_no != phone {
@@ -159,7 +168,8 @@ Here this function impliments a dummy near account  used for testing.
                 }
             }
 
-#[test].
+
+#[test]
 This test cofirms if the new_parcel method is able to create a new parcel.
 
             fn test_new_parcel(){
@@ -171,9 +181,10 @@ This test cofirms if the new_parcel method is able to create a new parcel.
                 assert_eq!(1, contract.parcels.len())
             }
 
-#[test].
+#[test]
 This test confirms if the pay function is able to check the amount paid for the new parcel and generate a tracking id.
-            fn test_pay(){
+           
+           fn test_pay(){
                 let mut context = get_context(vec![], false);
                 context.attached_deposit = 100 * 10u128.pow(22);
                 context.is_view = false;
@@ -186,8 +197,10 @@ This test confirms if the pay function is able to check the amount paid for the 
 
                 assert!(contract.parcels[&1].delivery_charges < 1);
             }
-#[test].
+
+#[test]
 This test confirm if the dispatch method is able to check on the amount paid and see if its matches the delivery charges before initiating the tracking.
+
             fn test_dispatch(){
                 let mut context = get_context(vec![], false);
                 context.attached_deposit = 100 * 10u128.pow(22);
