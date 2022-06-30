@@ -40,7 +40,6 @@ Here I create a struct parcel to define the parcel components.
 
         #[near_bindgen]
         #[derive(Default, BorshDeserialize, BorshSerialize)]
-
         pub struct Parcel {
             // SETUP CONTRACT STATE
             sender_name: String,
