@@ -7,11 +7,11 @@ The smart contract under the delivery app is a contract which can be applied in 
 
 ### Imports
 
-Imports all the necessary dependancies needed for this project
+Imports all the necessary dependancies needed for this project.
 
-use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{near_bindgen, env, log};
-use std::collections::HashMap;
+        use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
+        use near_sdk::{near_bindgen, env, log};
+        use std::collections::HashMap;
 
 Super struct to hold parcel and tracker declaration:
 
@@ -26,15 +26,15 @@ Super struct to hold parcel and tracker declaration:
 
 I initialize the defaults  contract to store trackers,parcels and ids using the Default keyword.
 
-impl Default for Contract {
-    fn default() -> Self {
-        Contract {
-            trackers: HashMap::new(),
-            parcels: HashMap::new(),
-            ids:1,
+        impl Default for Contract {
+            fn default() -> Self {
+                Contract {
+                    trackers: HashMap::new(),
+                    parcels: HashMap::new(),
+                    ids:1,
+                }
+            }
         }
-    }
-}
 
 Here I create a struct parcel to define the parcel components.
 
@@ -55,18 +55,20 @@ Here I create a struct parcel to define the parcel components.
             is_received:bool
         }
 
-Here I create a struct parcelTracker to define the tracker component
-#[near_bindgen]
-#[derive(Default, BorshDeserialize, BorshSerialize)]
- 
-pub struct ParcelTracker{
-    //Set up contract method
-    parcel_id:u16,
-    current_location:String,
-    has_arrived:bool
-}
+Here I create a struct parcelTracker to define the tracker component.
 
-Here I apply the implementation contract methods to create a new parcel
+        #[near_bindgen]
+        #[derive(Default, BorshDeserialize, BorshSerialize)]
+        
+        pub struct ParcelTracker{
+            //Set up contract method
+            parcel_id:u16,
+            current_location:String,
+            has_arrived:bool
+        }
+
+Here I apply the implementation contract methods to create a new parcel.
+
         #[near_bindgen]
         impl Contract {
             
@@ -91,25 +93,24 @@ Here I apply the implementation contract methods to create a new parcel
             self.ids += 1;
         }
 
- Here I implement the pay method  to check payment for delivery charges and generate tracking id
-  #[payable]
-  
-   pub fn pay(&mut self, id: u16){
-    let tokens = env::attached_deposit() / 10u128.pow(22);
-    if let Some(parcel) = self.parcels.get_mut(&id) {
-        parcel.delivery_charges = parcel.delivery_charges - tokens as u32;
-    }
+Here I implement the pay method  to check payment for delivery charges and generate tracking id.
 
-    if self.parcels[&id].delivery_charges > 1 {
-        log!("You still owe {}", self.parcels[&id].delivery_charges);
-    } else {
-        log!("Your package has been dispatched, your tracking id: {}", &id);
-    }
-   }
+        #[payable]
+        pub fn pay(&mut self, id: u16){
+            let tokens = env::attached_deposit() / 10u128.pow(22);
+            if let Some(parcel) = self.parcels.get_mut(&id) {
+                parcel.delivery_charges = parcel.delivery_charges - tokens as u32;
+            }
+            if self.parcels[&id].delivery_charges > 1 {
+                log!("You still owe {}", self.parcels[&id].delivery_charges);
+            } else {
+                log!("Your package has been dispatched, your tracking id: {}", &id);
+            }
+        }
 
- Here I impliments  dispatch method to check if the amount paid is equal to  the delivery charges and initiate tracking of the parcel
+ Here I impliments  dispatch method to check if the amount paid is equal to  the delivery charges and initiate tracking of the parcel.
+        
         #[private]
-
         pub fn dispatch(&mut self, id: u16, location: String){
             if self.parcels[&id].delivery_charges > 10 {
                 log!("Client still owes {}", self.parcels[&id].delivery_charges);
@@ -123,19 +124,19 @@ Here I apply the implementation contract methods to create a new parcel
 
             self.trackers.insert(id, new_tracker);
         }
+        
+ Here I implement track_package method  to query parcel location. This method check if the parcel id and the number are equal if the are not the location cannot be accessed.
 
-Here I implement track_package method  to query parcel location. This method check if the parcel id and the number are equal if the are not the location cannot be accessed.
-
-   pub fn track_package(&self, id: u16, phone: usize) -> String {
-    if self.parcels[&id].sender_phone_no != phone {
-        log!("Only package owners can tracker packages !");
-    }
-    self.trackers[&id].current_location.clone()
-   }
-}
+        pub fn track_package(&self, id: u16, phone: usize) -> String {
+            if self.parcels[&id].sender_phone_no != phone {
+                log!("Only package owners can tracker packages !");
+            }
+            self.trackers[&id].current_location.clone()
+        }
+        }
 
 
-Here this function impliments a dummy near account  used for testing
+Here this function impliments a dummy near account  used for testing.
 
             fn get_context(input: Vec<u8>, is_view: bool) -> VMContext {
                 VMContext {
@@ -158,9 +159,8 @@ Here this function impliments a dummy near account  used for testing
                 }
             }
 
- #[test]
-
-This test cofirms if the new_parcel method is able to create a new parcel
+#[test].
+This test cofirms if the new_parcel method is able to create a new parcel.
 
             fn test_new_parcel(){
                 // let mut context = get_context(accounts(1));
@@ -171,8 +171,8 @@ This test cofirms if the new_parcel method is able to create a new parcel
                 assert_eq!(1, contract.parcels.len())
             }
 
-#[test]
-This test confirms if the pay function is able to check the amount paid for the new parcel and generate a tracking id
+#[test].
+This test confirms if the pay function is able to check the amount paid for the new parcel and generate a tracking id.
             fn test_pay(){
                 let mut context = get_context(vec![], false);
                 context.attached_deposit = 100 * 10u128.pow(22);
@@ -186,8 +186,8 @@ This test confirms if the pay function is able to check the amount paid for the 
 
                 assert!(contract.parcels[&1].delivery_charges < 1);
             }
-#[test]
-This test confirm if the dispatch method is able to check on the amount paid and see if its matches the delivery charges before initiating the tracking
+#[test].
+This test confirm if the dispatch method is able to check on the amount paid and see if its matches the delivery charges before initiating the tracking.
             fn test_dispatch(){
                 let mut context = get_context(vec![], false);
                 context.attached_deposit = 100 * 10u128.pow(22);
